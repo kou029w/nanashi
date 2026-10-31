@@ -60,9 +60,9 @@ func newAlias(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	flag.Parse()
 	version := flag.Bool("version", false, "print the version")
 	listen := flag.String("listen", "", "serve the API on this address")
+	flag.Parse()
 	if *version {
 		bi, _ := debug.ReadBuildInfo()
 		fmt.Println(bi.Main.Version)
