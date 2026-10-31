@@ -1,0 +1,28 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+name: release
+on:
+  push:
+    tags:
+      - "v*"
+jobs:
+  release:
+    runs-on: self-hosted
+    steps:
+      - run: apk add nodejs
+      - uses: https://github.com/actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - uses: https://github.com/actions/setup-go@v6
+        with:
+          go-version-file: go.mod
+      - uses: https://github.com/docker/login-action@v4
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - uses: https://github.com/goreleaser/goreleaser-action@v7
+        with:
+          args: release --clean
+        env:
+          GORELEASER_FORCE_TOKEN: gitea
+          GITEA_TOKEN: ${{ secrets.GITEA_TOKEN }}
+          KO_DOCKER_REPO: ${{ secrets.DOCKER_USERNAME }}/nanashi
